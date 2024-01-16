@@ -68,13 +68,15 @@ public class TaskController {
 
     // Endpoint to delete a task by its ID
     // Returns 404 Not Found if the task to delete is not found
+    // Endpoint to delete a task by its ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable int id) {
+    public ResponseEntity<?> deleteTask(@PathVariable int id) {
         return taskService.getTaskById(id)
                 .map(task -> {
                     taskService.deleteTask(id);
-                    return ResponseEntity.ok().<Void>build();
+                    // Utilisation de ResponseEntity<?> pour permettre différents types de corps
+                    return ResponseEntity.ok().body("Task with ID " + id + " deleted successfully.");
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
